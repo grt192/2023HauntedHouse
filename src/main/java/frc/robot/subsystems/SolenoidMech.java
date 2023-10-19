@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,16 +20,16 @@ public class SolenoidMech extends SubsystemBase {
   private Solenoid solenoid;
 
 
-  public SolenoidMech(int channel, double uptime, double downtime) {
+  public SolenoidMech(PneumaticsControlModule pcm, int channel, double uptime, double downtime) {
     this.uptime = uptime;
     this.downtime = downtime;
-    solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, channel);
+    solenoid = pcm.makeSolenoid(channel);
     timer = new Timer();
     timer.start();
   }
 
-  public SolenoidMech(int channel, double uptime, double downtime, double randomness) {
-    this(channel, uptime, downtime);
+  public SolenoidMech(PneumaticsControlModule pcm, int channel, double uptime, double downtime, double randomness) {
+    this(pcm, channel, uptime, downtime);
     this.randomness = randomness;
   }
 
