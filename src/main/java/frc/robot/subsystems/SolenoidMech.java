@@ -20,16 +20,16 @@ public class SolenoidMech extends SubsystemBase {
   private Solenoid solenoid;
 
 
-  public SolenoidMech(PneumaticsControlModule pcm, int channel, double uptime, double downtime) {
+  public SolenoidMech(Solenoid solenoid, double uptime, double downtime) {
     this.uptime = uptime;
     this.downtime = downtime;
-    solenoid = pcm.makeSolenoid(channel);
+    this.solenoid = solenoid;
     timer = new Timer();
     timer.start();
   }
 
-  public SolenoidMech(PneumaticsControlModule pcm, int channel, double uptime, double downtime, double randomness) {
-    this(pcm, channel, uptime, downtime);
+  public SolenoidMech(Solenoid solenoid, double uptime, double downtime, double randomness) {
+    this(solenoid, uptime, downtime);
     this.randomness = randomness;
   }
 
