@@ -4,18 +4,16 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SolenoidMech extends SubsystemBase {
   
   private double uptime;
   private double downtime;
-  private double randomness = 0.0;
+  private double randomnessUp = 0.0;
+  private double randomnessDown = 0.0;
   private Timer timer;
   private Solenoid solenoid;
 
@@ -30,7 +28,14 @@ public class SolenoidMech extends SubsystemBase {
 
   public SolenoidMech(Solenoid solenoid, double uptime, double downtime, double randomness) {
     this(solenoid, uptime, downtime);
-    this.randomness = randomness;
+    this.randomnessUp = randomness;
+    this.randomnessDown = randomness;
+  }
+
+  public SolenoidMech(Solenoid solenoid, double uptime, double downtime, double randomnessUp, double randomnessDown) {
+    this(solenoid, uptime, downtime);
+    this.randomnessUp = randomnessUp;
+    this.randomnessDown = randomnessDown;
   }
 
 
@@ -41,7 +46,9 @@ public class SolenoidMech extends SubsystemBase {
   public void periodic() {
     if(timer.advanceIfElapsed(timeUntilNextEvent)){
       up = !up;
-      timeUntilNextEvent = (up ? uptime : downtime) * (1 + (Math.random() * 2 - 1) * randomness);
+      // Time is random in the range [uptime - uptime * randomnesesUp, uptime + uptime * randomnessUp] if switching to up
+      // or [downtime - downtime * randomnesesDown, downtime + downtime * randomnessDown] if switching to down
+      timeUntilNextEvent = (up ? uptime * (1 + (Math.random() * 2 - 1) * randomnessUp) : downtime * (1 + (Math.random() * 2 - 1) * randomnessDown)) ;
     }
 
     solenoid.set(up);
