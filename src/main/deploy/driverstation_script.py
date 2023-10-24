@@ -3,6 +3,7 @@
 
 # BEFORE RUNNING THIS:
 # run 'python3 -m pip install pynetworktables' to install the module needed for networktables comms
+# run 'python3 -m pip install pygame' to install the module needed for sound playback
 
 import time
 from networktables import NetworkTables # <--- this will raise an error when in the java env, create a python venv on DS and run this there
