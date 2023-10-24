@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.LukeMech;
 import frc.robot.subsystems.SolenoidMech;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 
@@ -25,6 +26,8 @@ public class RobotContainer {
   private final SolenoidMech gregMech;
   private final SolenoidMech williamMech;
 
+  private final LukeMech lukeMech;
+
 
   public RobotContainer() {
     aryaLEDs = new SolenoidMech(pcm1.makeSolenoid(2), 5, 5);
@@ -33,6 +36,7 @@ public class RobotContainer {
     seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 7, 5);
     riyaMech = new SolenoidMech(pcm2.makeSolenoid(2), 7.5, 14);
     vivienMech = new SolenoidMech(pcm2.makeSolenoid(4), 5, 5);
+    lukeMech = new LukeMech(pcm1.makeSolenoid(0), pcm1.makeSolenoid(0));
    
   }
 
