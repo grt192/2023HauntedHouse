@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.LukeMech;
 import frc.robot.subsystems.SolenoidMech;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 
@@ -25,6 +26,8 @@ public class RobotContainer {
   private final SolenoidMech gregMech;
   private final SolenoidMech williamMech;
 
+  private final LukeMech lukeMech;
+
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -32,9 +35,12 @@ public class RobotContainer {
     christineMech = new SolenoidMech(pcm1.makeSolenoid(0), 5, 5);
     gregMech = new SolenoidMech(pcm1.makeSolenoid(4), 5, 5);
     williamMech = new SolenoidMech(pcm1.makeSolenoid(5), 5, 5);
+    
     seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 5, 5);
     riyaMech = new SolenoidMech(pcm2.makeSolenoid(1), 5, 5);
     vivienMech = new SolenoidMech(pcm2.makeSolenoid(2), 5, 5);
+
+    lukeMech = new LukeMech(pcm1.makeSolenoid(0), pcm1.makeSolenoid(0)); //TODO: CHANGEEEEE CHANGEEEE
     // Configure the trigger bindings
   }
 
