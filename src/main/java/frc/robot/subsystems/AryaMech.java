@@ -30,14 +30,13 @@ public class AryaMech extends SubsystemBase{
     private Timer audio_timer;
     private final double time_to_wait_before_turning_off_audio_signal;
 
-    private final LEDStrip ledStrip;
-    private final LEDLayer baseLayer;
-    private final int LED_LENGTH = 0;
+    private final AnalogOutput ledStrip;
     private final int LED_PWM_PORT = 0;
+    private Timer ledTimer;
 
     public AryaMech(Solenoid shortSolenoid, Solenoid longSolenoid){
-        // this.shortSolenoid = shortSolenoid;
-        // this.longSolenoid = longSolenoid;
+        this.shortSolenoid = shortSolenoid;
+        this.longSolenoid = longSolenoid;
 
         //ik this looks sus but its for ease of change
         shortIn = 40;
@@ -50,8 +49,8 @@ public class AryaMech extends SubsystemBase{
         audio_timer = new Timer();
         time_to_wait_before_turning_off_audio_signal = 1.0;
 
-        ledStrip = new LEDStrip(LED_PWM_PORT, LED_LENGTH);
-        baseLayer = new LEDLayer(LED_LENGTH);
+        ledStrip = new AnalogOutput(LED_PWM_PORT);
+        ledTimer = new Timer();
 
         timer= new Timer();
         timer.start();
@@ -67,7 +66,14 @@ public class AryaMech extends SubsystemBase{
             out = !out;
         }
 
-        audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
+        if(ledTimer.hasElapsed(0.25)){
+            ledStrip.setVoltage(0.0);
+            ledTimer.stop();
+            ledTimer.reset();
+            ledTimer.start();
+        }
+        
+        // audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
         if(audio_timer.hasElapsed(time_to_wait_before_turning_off_audio_signal)){
             audioPub.set(0.0); // Set the value on networktables to zero so we don't restart the audio
             audio_timer.stop();
@@ -85,17 +91,17 @@ public class AryaMech extends SubsystemBase{
             audio_timer.reset(); // setting a timer so that we can stop sending the signal after an appropriate amount of time
             audio_timer.start(); // if we don't stop sending the trigger signal, the audio might start playing again
 
-            baseLayer.fillColor(new Color(255, 50, 0));
+            ledStrip.setVoltage(5.0);
+            ledTimer.reset();
+            ledTimer.start();
             
             longSolenoid.set(true);
         }
         //reset
         else if (timer.advanceIfElapsed(longIn)){
             longSolenoid.set(false);
+            ledStrip.setVoltage(0.0);
         }
-
-        ledStrip.addLayer(baseLayer);
-
 
     }
     
