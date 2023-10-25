@@ -4,7 +4,10 @@ import javax.swing.text.StyledEditorKit.BoldAction;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.leds.LEDLayer;
+import frc.robot.subsystems.leds.LEDStrip;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -27,6 +30,11 @@ public class AryaMech extends SubsystemBase{
     private Timer audio_timer;
     private final double time_to_wait_before_turning_off_audio_signal;
 
+    private final LEDStrip ledStrip;
+    private final LEDLayer baseLayer;
+    private final int LED_LENGTH = 0;
+    private final int LED_PWM_PORT = 0;
+
     public AryaMech(Solenoid shortSolenoid, Solenoid longSolenoid){
         // this.shortSolenoid = shortSolenoid;
         // this.longSolenoid = longSolenoid;
@@ -42,6 +50,8 @@ public class AryaMech extends SubsystemBase{
         audio_timer = new Timer();
         time_to_wait_before_turning_off_audio_signal = 1.0;
 
+        ledStrip = new LEDStrip(LED_PWM_PORT, LED_LENGTH);
+        baseLayer = new LEDLayer(LED_LENGTH);
 
         timer= new Timer();
         timer.start();
@@ -74,6 +84,8 @@ public class AryaMech extends SubsystemBase{
             audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
             audio_timer.reset(); // setting a timer so that we can stop sending the signal after an appropriate amount of time
             audio_timer.start(); // if we don't stop sending the trigger signal, the audio might start playing again
+
+            baseLayer.fillColor(new Color(255, 50, 0));
             
             longSolenoid.set(true);
         }
@@ -81,6 +93,8 @@ public class AryaMech extends SubsystemBase{
         else if (timer.advanceIfElapsed(longIn)){
             longSolenoid.set(false);
         }
+
+        ledStrip.addLayer(baseLayer);
 
 
     }
