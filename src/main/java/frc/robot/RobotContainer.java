@@ -21,18 +21,18 @@ public class RobotContainer {
   private final SolenoidMech vivienMech;
   private final SolenoidMech seanMech;
   private final SolenoidMech riyaMech;
-  private final SolenoidMech christineMech;
+  private final SolenoidMech aryaLEDs;
   private final SolenoidMech gregMech;
   private final SolenoidMech williamMech;
 
 
   public RobotContainer() {
-    christineMech = new SolenoidMech(pcm1.makeSolenoid(0), 20, 20);
+    aryaLEDs = new SolenoidMech(pcm1.makeSolenoid(2), 5, 5);
     gregMech = new SolenoidMech(pcm1.makeSolenoid(4), 20, 20);
     williamMech = new SolenoidMech(pcm1.makeSolenoid(5), 1.5, 1.5);
     seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 7, 5);
-    riyaMech = new SolenoidMech(pcm2.makeSolenoid(1), 7.5, 14);
-    vivienMech = new SolenoidMech(pcm2.makeSolenoid(2), 5, 5);
+    riyaMech = new SolenoidMech(pcm2.makeSolenoid(2), 7.5, 14);
+    vivienMech = new SolenoidMech(pcm2.makeSolenoid(4), 5, 5);
    
   }
 
