@@ -65,7 +65,7 @@ public class AryaMech extends SubsystemBase{
             out = !out;
         }
 
-        if(ledTimer.hasElapsed(0.25)){
+        if(ledTimer.hasElapsed(0.1)){
             ledStrip.set(false);
             ledTimer.stop();
             ledTimer.reset();
