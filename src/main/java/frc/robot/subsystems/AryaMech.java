@@ -18,10 +18,12 @@ public class AryaMech extends SubsystemBase{
     private Solenoid longSolenoid;
     private final Solenoid ledStrip;
 
-    private double longOut;
-    private double longIn;
-    private double shortOut;
-    private double shortIn;
+    private double SHORT_OUT = 40;
+    private double END = SHORT_OUT + 12;
+    private double FLASH_INTERVAL = 0.1;
+    private double SHORT_INTERVAL_IN = 0.2;
+    private double SHORT_INTERVAL_OUT= 2.0;
+
 
     private boolean out;
     
@@ -30,28 +32,31 @@ public class AryaMech extends SubsystemBase{
     DoublePublisher audioPub;
     private Timer audio_timer;
     private final double time_to_wait_before_turning_off_audio_signal;
+    private boolean s40 = false;
+    private boolean s41 = false;
+    private boolean s46 = false;
+    private boolean led = false;
+
 
     private Timer ledTimer;
+    private Timer pumpTimer;
 
     public AryaMech(Solenoid shortSolenoid, Solenoid longSolenoid, Solenoid ledStrip){
         this.shortSolenoid = shortSolenoid;
         this.longSolenoid = longSolenoid;
         this.ledStrip = ledStrip;
 
-        //ik this looks sus but its for ease of change
-        shortIn = 40;
-        longOut = shortIn + 5;
-        longIn = longOut + 15;
-
         inst = NetworkTableInstance.getDefault();
         table = inst.getTable("audio");
         audioPub = table.getDoubleTopic("trigger_audio").publish();
         audio_timer = new Timer();
+        audio_timer.start();
+        pumpTimer = new Timer();
         time_to_wait_before_turning_off_audio_signal = 1.0;
 
         ledTimer = new Timer();
 
-        timer= new Timer();
+        timer = new Timer();
         timer.start();
 
         out = true;
@@ -60,46 +65,50 @@ public class AryaMech extends SubsystemBase{
 
     public void periodic() {
         //skeleton pumps thing to set off tnt
-        if(timer.get() < 40 && timer.get() % 2 == 0){
+        
+        if(timer.get() < SHORT_OUT && pumpTimer.advanceIfElapsed(out ? SHORT_INTERVAL_OUT : SHORT_INTERVAL_IN)){ 
             shortSolenoid.set(out);
             out = !out;
         }
 
-        if(ledTimer.hasElapsed(0.1)){
-            ledStrip.set(false);
-            ledTimer.stop();
-            ledTimer.reset();
-            ledTimer.start();
+        if(timer.hasElapsed(SHORT_OUT) && !s40){
+            shortSolenoid.set(true);
+            s40 = true;
+        }
+        if(timer.hasElapsed(SHORT_OUT + 1) && !s41){
+            shortSolenoid.set(false);
+            s41 = true;
         }
         
         // audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
-        if(audio_timer.hasElapsed(time_to_wait_before_turning_off_audio_signal)){
-            audioPub.set(0.0); // Set the value on networktables to zero so we don't restart the audio
-            audio_timer.stop();
-            audio_timer.reset();
-        }
-
-        //pumps end on an in
-        else if (timer.hasElapsed(shortIn)){
-            shortSolenoid.set(false);
-        }
-        //tnt explodes, minecraft tnt sound plays
-        else if (timer.hasElapsed(longOut)){
+        if(timer.hasElapsed(SHORT_OUT + 2)){
             System.out.println("SETTING TRIGGER");
-            audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
-            audio_timer.reset(); // setting a timer so that we can stop sending the signal after an appropriate amount of time
-            audio_timer.start(); // if we don't stop sending the trigger signal, the audio might start playing again
+            audioPub.set(1.0); // Set the value on networktables to zero so we don't restart the audio
+        }
 
-            ledStrip.set(true);
+        if(timer.hasElapsed(SHORT_OUT + 6) && !s46){
+            longSolenoid.set(true);
+            s46 = true;
             ledTimer.reset();
             ledTimer.start();
-            
-            longSolenoid.set(true);
         }
-        //reset
-        else if (timer.advanceIfElapsed(longIn)){
+
+        if(timer.hasElapsed(SHORT_OUT + 6) && ledTimer.advanceIfElapsed(FLASH_INTERVAL)){
+            led = !led;
+            ledStrip.set(led);
+        }
+
+        if (timer.advanceIfElapsed(END)){
             longSolenoid.set(false);
             ledStrip.set(false);
+            s40 = false;
+            s41 = false;
+            s46 = false;
+            ledTimer.stop();
+            audioPub.set(0.0);
+        }
+        if(audio_timer.advanceIfElapsed(.05)){
+            System.out.println("SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get());
         }
 
     }
