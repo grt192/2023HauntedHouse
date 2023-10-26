@@ -39,7 +39,7 @@ public class RobotContainer {
     riyaMech = new SolenoidMech(pcm2.makeSolenoid(2), 7.5, 14);
     vivienMech = new SolenoidMech(pcm2.makeSolenoid(4), 5, 5);
     lukeMech = new LukeMech(pcm1.makeSolenoid(0), pcm1.makeSolenoid(0));
-    aryaMech = new AryaMech(pcm2.makeSolenoid(0), pcm2.makeSolenoid(0));
+    aryaMech = new AryaMech(pcm2.makeSolenoid(0), pcm2.makeSolenoid(0), pcm2.makeSolenoid(LED_PWM_PORT));
   }
 
 }

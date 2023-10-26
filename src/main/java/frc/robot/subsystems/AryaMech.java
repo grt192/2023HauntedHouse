@@ -16,6 +16,7 @@ public class AryaMech extends SubsystemBase{
     private Timer timer;
     private Solenoid shortSolenoid;
     private Solenoid longSolenoid;
+    private final Solenoid ledStrip;
 
     private double longOut;
     private double longIn;
@@ -30,13 +31,12 @@ public class AryaMech extends SubsystemBase{
     private Timer audio_timer;
     private final double time_to_wait_before_turning_off_audio_signal;
 
-    private final AnalogOutput ledStrip;
-    private final int LED_PWM_PORT = 0;
     private Timer ledTimer;
 
-    public AryaMech(Solenoid shortSolenoid, Solenoid longSolenoid){
+    public AryaMech(Solenoid shortSolenoid, Solenoid longSolenoid, Solenoid ledStrip){
         this.shortSolenoid = shortSolenoid;
         this.longSolenoid = longSolenoid;
+        this.ledStrip = ledStrip;
 
         //ik this looks sus but its for ease of change
         shortIn = 40;
@@ -49,7 +49,6 @@ public class AryaMech extends SubsystemBase{
         audio_timer = new Timer();
         time_to_wait_before_turning_off_audio_signal = 1.0;
 
-        ledStrip = new AnalogOutput(LED_PWM_PORT);
         ledTimer = new Timer();
 
         timer= new Timer();
@@ -67,7 +66,7 @@ public class AryaMech extends SubsystemBase{
         }
 
         if(ledTimer.hasElapsed(0.25)){
-            ledStrip.setVoltage(0.0);
+            ledStrip.set(false);
             ledTimer.stop();
             ledTimer.reset();
             ledTimer.start();
@@ -91,7 +90,7 @@ public class AryaMech extends SubsystemBase{
             audio_timer.reset(); // setting a timer so that we can stop sending the signal after an appropriate amount of time
             audio_timer.start(); // if we don't stop sending the trigger signal, the audio might start playing again
 
-            ledStrip.setVoltage(5.0);
+            ledStrip.set(true);
             ledTimer.reset();
             ledTimer.start();
             
@@ -100,7 +99,7 @@ public class AryaMech extends SubsystemBase{
         //reset
         else if (timer.advanceIfElapsed(longIn)){
             longSolenoid.set(false);
-            ledStrip.setVoltage(0.0);
+            ledStrip.set(false);
         }
 
     }
