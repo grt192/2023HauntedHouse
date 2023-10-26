@@ -26,16 +26,14 @@ public class RobotContainer {
   private final SolenoidMech williamMech;
 
 
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    christineMech = new SolenoidMech(pcm1.makeSolenoid(0), 5, 5);
-    gregMech = new SolenoidMech(pcm1.makeSolenoid(4), 5, 5);
-    williamMech = new SolenoidMech(pcm1.makeSolenoid(5), 5, 5);
-    seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 5, 5);
-    riyaMech = new SolenoidMech(pcm2.makeSolenoid(1), 5, 5);
+    christineMech = new SolenoidMech(pcm1.makeSolenoid(0), 20, 20);
+    gregMech = new SolenoidMech(pcm1.makeSolenoid(4), 20, 20);
+    williamMech = new SolenoidMech(pcm1.makeSolenoid(5), 1.5, 1.5);
+    seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 7, 5);
+    riyaMech = new SolenoidMech(pcm2.makeSolenoid(1), 7.5, 14);
     vivienMech = new SolenoidMech(pcm2.makeSolenoid(2), 5, 5);
-    // Configure the trigger bindings
+   
   }
 
 }
