@@ -1,0 +1,17 @@
+To run the sound system on the 2023 Haunted House:
+
+1. Plug the 3.5mm audio cable into the speaker and the audio jack on the driverstation computer.
+2. Save 'driverstation_script.py' and 'explosion_sound.wav' to a directory on the driverstation computer.
+3. If python3 is not installed, install it. 
+4. If desired (such as if running on non-GRT computer), create a virtual environment (venv) with python3.
+5. Install pygame and pynetworktables:
+    Run 'python3 -m pip install pynetworktables' to install the module needed for networktables comms.
+    Run 'python3 -m pip install pygame' to install the module needed for sound playback.
+6. Once on robot WiFi, trigger the python3 script:
+    either by entering 'python3 <filepath/driverstation_script.py>
+    or using the editor's run function (e.g. VSCode run)
+7. Script should print an initialization confirmation.
+8. When triggered via networktables on robot, code should play audio file.
+
+Troubleshooting:
+    1. Change 'debug' variable to True in code to print out trigger value constantly (to check if values are being received).
