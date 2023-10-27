@@ -23,7 +23,6 @@ public class RobotContainer {
   private final SolenoidMech vivienMech;
   private final SolenoidMech seanMech;
   private final SolenoidMech riyaMech;
-  private final SolenoidMech aryaLEDs;
   private final SolenoidMech gregMech;
   private final SolenoidMech williamMech;
 
@@ -32,7 +31,6 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    aryaLEDs = new SolenoidMech(pcm1.makeSolenoid(2), 5, 5);
     gregMech = new SolenoidMech(pcm1.makeSolenoid(4), 20, 20);
     williamMech = new SolenoidMech(pcm1.makeSolenoid(5), 1.5, 1.5);
     seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 7, 5);

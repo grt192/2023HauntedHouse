@@ -58,6 +58,7 @@ public class AryaMech extends SubsystemBase{
 
         timer = new Timer();
         timer.start();
+        pumpTimer.start();
 
         out = true;
 
@@ -82,7 +83,6 @@ public class AryaMech extends SubsystemBase{
         
         // audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
         if(timer.hasElapsed(SHORT_OUT + 2)){
-            System.out.println("SETTING TRIGGER");
             audioPub.set(1.0); // Set the value on networktables to zero so we don't restart the audio
         }
 
@@ -108,7 +108,7 @@ public class AryaMech extends SubsystemBase{
             audioPub.set(0.0);
         }
         if(audio_timer.advanceIfElapsed(.05)){
-            System.out.println("SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get());
+            System.out.println(((int) (timer.get() * 10)) / 10. + "  SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get());
         }
 
     }
