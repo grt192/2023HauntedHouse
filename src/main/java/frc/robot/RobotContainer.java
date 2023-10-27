@@ -32,11 +32,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     gregMech = new SolenoidMech(pcm1.makeSolenoid(4), 20, 20);
-    williamMech = new SolenoidMech(pcm1.makeSolenoid(5), 1.5, 1.5);
+    williamMech = new SolenoidMech(pcm1.makeSolenoid(7), 1.5, 1.5);
     seanMech = new SolenoidMech(pcm2.makeSolenoid(0), 7, 5);
     riyaMech = new SolenoidMech(pcm2.makeSolenoid(2), 7.5, 14);
     vivienMech = new SolenoidMech(pcm2.makeSolenoid(4), 5, 5);
-    lukeMech = new LukeMech(pcm1.makeSolenoid(6), pcm1.makeSolenoid(7));
+    lukeMech = new LukeMech(pcm1.makeSolenoid(5), pcm1.makeSolenoid(6));
     aryaMech = new AryaMech(pcm1.makeSolenoid(0), pcm1.makeSolenoid(1), pcm1.makeSolenoid(2));
   }
 

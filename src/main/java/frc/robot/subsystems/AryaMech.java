@@ -19,8 +19,8 @@ public class AryaMech extends SubsystemBase{
     private final Solenoid ledStrip;
 
     private double SHORT_OUT = 40;
-    private double END = SHORT_OUT + 12;
-    private double FLASH_INTERVAL = 0.1;
+    private double END = SHORT_OUT + 16;
+    private double FLASH_INTERVAL = 0.15;
     private double SHORT_INTERVAL_IN = 0.2;
     private double SHORT_INTERVAL_OUT= 2.0;
 
@@ -79,6 +79,8 @@ public class AryaMech extends SubsystemBase{
         if(timer.hasElapsed(SHORT_OUT + 1) && !s41){
             shortSolenoid.set(false);
             s41 = true;
+            ledTimer.reset();
+            ledTimer.start();
         }
         
         // audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
@@ -89,11 +91,18 @@ public class AryaMech extends SubsystemBase{
         if(timer.hasElapsed(SHORT_OUT + 6) && !s46){
             longSolenoid.set(true);
             s46 = true;
-            ledTimer.reset();
-            ledTimer.start();
         }
 
         if(timer.hasElapsed(SHORT_OUT + 6) && ledTimer.advanceIfElapsed(FLASH_INTERVAL)){
+            led = !led;
+            ledStrip.set(led);
+        } else if (timer.hasElapsed(SHORT_OUT + 4) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 1.5)){
+            led = !led;
+            ledStrip.set(led);
+        } else if (timer.hasElapsed(SHORT_OUT + 2) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 2)){
+            led = !led;
+            ledStrip.set(led);
+        } else if (timer.hasElapsed(SHORT_OUT) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 2)){
             led = !led;
             ledStrip.set(led);
         }
@@ -108,7 +117,7 @@ public class AryaMech extends SubsystemBase{
             audioPub.set(0.0);
         }
         if(audio_timer.advanceIfElapsed(.05)){
-            System.out.println(((int) (timer.get() * 10)) / 10. + "  SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get());
+            System.out.println(((int) (timer.get() * 10)) / 10. + "  SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get() + "  LED:" + led);
         }
 
     }
