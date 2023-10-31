@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,7 @@ public class LukeMech extends SubsystemBase{
     private double horOut;
     private double horIn;
     private int state = 0;
+    private int oldState = 3;
 
 
     public LukeMech(Solenoid verSolenoid, Solenoid horSolenoid){
@@ -22,9 +24,9 @@ public class LukeMech extends SubsystemBase{
 
         //ik this looks sus but its for ease of change
         vertUp = 7;
-        horOut = vertUp + 2;
-        horIn = horOut + 3;
-        vertDown = horIn + 2;
+        horOut = 5;
+        horIn = 3;
+        vertDown = 3;
 
         timer= new Timer();
         timer.start();
@@ -33,23 +35,43 @@ public class LukeMech extends SubsystemBase{
 
     public void periodic() {
 
+        if((state == 1 || state == 2) && !verSolenoid.get()){
+            state = 0;
+        }
+        
         
         if(timer.hasElapsed(vertUp) && state == 0){
             verSolenoid.set(true);
             state = 1;
+            timer.reset();
+            timer.start();
         }
         else if (timer.hasElapsed(horOut) && state == 1){
-            horSolenoid.set(true);
+            if(verSolenoid.get()){ 
+                horSolenoid.set(true);
+            }
             state = 2;
+            timer.reset();
+            timer.start();
         }
         else if (timer.hasElapsed(horIn) && state == 2){
-            horSolenoid.set(false);
+            if(verSolenoid.get()){ 
+                horSolenoid.set(false);
+            }
             state = 3;
+            timer.reset();
+            timer.start();
         }
-        else if (timer.advanceIfElapsed(vertDown)){
-            verSolenoid.set(false);
+        else if (timer.hasElapsed(vertDown) && state == 3){
+            if(!horSolenoid.get()){
+                verSolenoid.set(false);
+            }
             state = 0;
+            timer.reset();
+            timer.start();
         }
+
+        // System.out.println((((int) (timer.get() * 10)) / 10.) +" " + state + "," + verSolenoid.get() + " , " + horSolenoid.get());
 
 
     }

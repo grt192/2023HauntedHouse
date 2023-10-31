@@ -34,6 +34,7 @@ public class AryaMech extends SubsystemBase{
     private final double time_to_wait_before_turning_off_audio_signal;
     private boolean s40 = false;
     private boolean s41 = false;
+    private boolean s42 = false;
     private boolean s46 = false;
     private boolean led = false;
 
@@ -67,7 +68,7 @@ public class AryaMech extends SubsystemBase{
     public void periodic() {
         //skeleton pumps thing to set off tnt
         
-        if(timer.get() < SHORT_OUT && pumpTimer.advanceIfElapsed(out ? SHORT_INTERVAL_OUT : SHORT_INTERVAL_IN)){ 
+        if(timer.get() < SHORT_OUT && pumpTimer.advanceIfElapsed(out ? SHORT_INTERVAL_IN : SHORT_INTERVAL_OUT)){ 
             shortSolenoid.set(out);
             out = !out;
         }
@@ -76,16 +77,17 @@ public class AryaMech extends SubsystemBase{
             shortSolenoid.set(true);
             s40 = true;
         }
-        if(timer.hasElapsed(SHORT_OUT + 1) && !s41){
+        if(timer.hasElapsed(SHORT_OUT + 1.7) && !s41){
             shortSolenoid.set(false);
             s41 = true;
-            ledTimer.reset();
-            ledTimer.start();
         }
         
         // audioPub.set(1.0); // this publishes the trigger signal to networktables, which gets picked up by the driverstation python script
-        if(timer.hasElapsed(SHORT_OUT + 2)){
+        if(timer.hasElapsed(SHORT_OUT + 2) && !s42){
             audioPub.set(1.0); // Set the value on networktables to zero so we don't restart the audio
+            ledTimer.reset();
+            ledTimer.start();
+            s42 = true;
         }
 
         if(timer.hasElapsed(SHORT_OUT + 6) && !s46){
@@ -93,16 +95,16 @@ public class AryaMech extends SubsystemBase{
             s46 = true;
         }
 
-        if(timer.hasElapsed(SHORT_OUT + 6) && ledTimer.advanceIfElapsed(FLASH_INTERVAL)){
+        if(timer.hasElapsed(SHORT_OUT + 7) && ledTimer.advanceIfElapsed(FLASH_INTERVAL)){
+            System.out.println("asdfasdf");
             led = !led;
             ledStrip.set(led);
-        } else if (timer.hasElapsed(SHORT_OUT + 4) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 1.5)){
+        } else if (timer.hasElapsed(SHORT_OUT + 4) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 3)){
+            System.out.println("asdfasdf");
             led = !led;
             ledStrip.set(led);
-        } else if (timer.hasElapsed(SHORT_OUT + 2) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 2)){
-            led = !led;
-            ledStrip.set(led);
-        } else if (timer.hasElapsed(SHORT_OUT) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 2)){
+        } else if (timer.hasElapsed(SHORT_OUT + 2) && ledTimer.advanceIfElapsed(FLASH_INTERVAL * 5)){
+            System.out.println("asdfasdf");
             led = !led;
             ledStrip.set(led);
         }
@@ -112,13 +114,14 @@ public class AryaMech extends SubsystemBase{
             ledStrip.set(false);
             s40 = false;
             s41 = false;
+            s42 = false;
             s46 = false;
             ledTimer.stop();
             audioPub.set(0.0);
         }
-        if(audio_timer.advanceIfElapsed(.05)){
-            System.out.println(((int) (timer.get() * 10)) / 10. + "  SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get() + "  LED:" + led);
-        }
+        // if(audio_timer.advanceIfElapsed(.05)){
+        //     System.out.println(((int) (timer.get() * 10)) / 10. + "  SHORT: " + shortSolenoid.get() + "  LONG: " + longSolenoid.get() + "  LED:" + led);
+        // }
 
     }
     
